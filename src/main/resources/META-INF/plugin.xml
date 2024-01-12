@@ -9,7 +9,10 @@
     <resource-bundle>messages.MyBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
+<!--        <codeInsight.inlayProvider language="kotlin" implementationClass="com.github.starmel.composestatsplugin.MyInlayHintsProvider"/>-->
+        <codeInsight.inlayProvider language="kotlin" implementationClass="com.github.starmel.composestatsplugin.way.StringLiteralInlayProvider"/>
         <toolWindow factoryClass="com.github.starmel.composestatsplugin.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
+<!--        <annotator language="kotlin" implementationClass="com.github.starmel.composestatsplugin.MyAnnotator"/>-->
     </extensions>
 
     <applicationListeners>
