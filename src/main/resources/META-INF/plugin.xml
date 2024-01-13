@@ -5,14 +5,21 @@
     <vendor>starmel</vendor>
 
     <depends>com.intellij.modules.platform</depends>
+    <depends>org.jetbrains.kotlin</depends>
 
     <resource-bundle>messages.MyBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
-<!--        <codeInsight.inlayProvider language="kotlin" implementationClass="com.github.starmel.composestatsplugin.MyInlayHintsProvider"/>-->
+        <localInspection language="kotlin"
+                         bundle="messages.InspectionBundle"
+                         key="compose.blabla"
+                         groupPath="Kotlin"
+                         groupBundle="messages.InspectionsBundle"
+                         groupKey="group.names.probable.bugs"
+                         enabledByDefault="true"
+                         level="WARNING"
+                         implementationClass="com.github.starmel.composestatsplugin.way.CustomWarningInspection"/>
         <codeInsight.inlayProvider language="kotlin" implementationClass="com.github.starmel.composestatsplugin.way.StringLiteralInlayProvider"/>
-        <toolWindow factoryClass="com.github.starmel.composestatsplugin.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
-<!--        <annotator language="kotlin" implementationClass="com.github.starmel.composestatsplugin.MyAnnotator"/>-->
     </extensions>
 
     <applicationListeners>

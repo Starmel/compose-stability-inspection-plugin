@@ -24,7 +24,11 @@ repositories {
 // Dependencies are managed with Gradle version catalog - read more: https://docs.gradle.org/current/userguide/platforms.html#sub:version-catalog
 dependencies {
     implementation(libs.annotations)
-    implementation("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.8.21")
+
+    // junit, kotlin test, mockk do not use version catalog
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:+")
+    testImplementation("io.mockk:mockk:1.12.0")
 }
 
 // Set the JVM language level used to build the project. Use Java 11 for 2020.3+, and Java 17 for 2022.2+.
@@ -64,6 +68,14 @@ koverReport {
         }
     }
 }
+
+//sourceSets {
+//    test {
+//        resources {
+//            srcDir("src/test/resources")
+//        }
+//    }
+//}
 
 tasks {
     wrapper {
@@ -109,6 +121,11 @@ tasks {
         systemProperty("ide.mac.message.dialogs.as.sheets", "false")
         systemProperty("jb.privacy.policy.text", "<!--999.999-->")
         systemProperty("jb.consents.confirmation.enabled", "false")
+    }
+
+    runIde {
+        autoReloadPlugins.set(true)
+        jvmArgs = listOf("-XX:+UnlockDiagnosticVMOptions")
     }
 
     signPlugin {

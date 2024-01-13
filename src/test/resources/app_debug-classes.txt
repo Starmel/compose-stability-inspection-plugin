@@ -1,0 +1,367 @@
+unstable class AdProvider {
+  unstable val context: Context
+  unstable val lifecycle: Lifecycle
+  unstable val preloaded: AdView
+  <runtime stability> = Unstable
+}
+stable class MainActivity {
+  <runtime stability> = Stable
+}
+unstable class Photographer {
+  stable val id: String
+  stable val name: String
+  stable val lastSeenOnline: String
+  stable val avatar: Int
+  stable val mainImage: Int
+  stable val numOfFollowers: String
+  stable val numOfFollowing: String
+  unstable val tags: List<String>
+  unstable val photos: Map<String, List<Int>>
+  <runtime stability> = Unstable
+}
+unstable class PhotographersViewModel {
+  unstable val _photographers: MutableStateFlow<List<Photographer>>
+  unstable val photographers: StateFlow<List<Photographer>>
+  <runtime stability> = Unstable
+}
+stable class FrontonVector {
+  stable val imageVector: ImageVector
+  <runtime stability> = Stable
+}
+stable class ArrowsGroup {
+  <runtime stability> = Stable
+}
+stable class BrandsGroup {
+  <runtime stability> = Stable
+}
+stable class CommerceGroup {
+  <runtime stability> = Stable
+}
+stable class CommunicationGroup {
+  <runtime stability> = Stable
+}
+stable class DesignGroup {
+  <runtime stability> = Stable
+}
+stable class DevelopmentGroup {
+  <runtime stability> = Stable
+}
+stable class EducationGroup {
+  <runtime stability> = Stable
+}
+stable class FrontonIcons {
+  <runtime stability> = Stable
+}
+stable class GamesGroup {
+  <runtime stability> = Stable
+}
+stable class HealthAndWellnessGroup {
+  <runtime stability> = Stable
+}
+stable class MapsAndTravelGroup {
+  <runtime stability> = Stable
+}
+stable class MathAndFinanceGroup {
+  <runtime stability> = Stable
+}
+stable class MediaGroup {
+  <runtime stability> = Stable
+}
+stable class OfficeAndEditingGroup {
+  <runtime stability> = Stable
+}
+stable class PeopleGroup {
+  <runtime stability> = Stable
+}
+stable class SecurityAndWarningsGroup {
+  <runtime stability> = Stable
+}
+stable class SystemAndDevicesGroup {
+  <runtime stability> = Stable
+}
+stable class TimeGroup {
+  <runtime stability> = Stable
+}
+stable class WeatherAndNatureGroup {
+  <runtime stability> = Stable
+}
+stable class FrontonRippleTheme {
+  stable val isDarkTheme: Boolean
+  <runtime stability> = Stable
+}
+stable class Fronton {
+  <runtime stability> = Stable
+}
+stable class FrontonColors {
+  stable val textPrimary: Color
+  stable val textSecondary: Color
+  stable val textMinor: Color
+  stable val textInvert: Color
+  stable val backgroundPrimary: Color
+  stable val backgroundSecondary: Color
+  stable val backgroundAccent: Color
+  stable val controlPrimary: Color
+  stable val controlSecondary: Color
+  stable val controlMinor: Color
+  stable val controlAccent: Color
+  stable val controlPrimaryInvert: Color
+  stable val controlSecondaryInvert: Color
+  stable val controlMinorInvert: Color
+  stable val pressedPrimary: Color
+  stable val pressedAccent: Color
+  stable val pressedSecondary: Color
+  stable val pressedMinor: Color
+  stable val pressedPrimaryInvert: Color
+  stable val pressedSecondaryInvert: Color
+  stable val pressedMinorInvert: Color
+  stable val successPrimary: Color
+  stable val successDark: Color
+  stable val successLight: Color
+  stable val accentPrimary: Color
+  stable val accentDark: Color
+  stable val accentLight: Color
+  stable val attentionPrimary: Color
+  stable val attentionDark: Color
+  stable val attentionLight: Color
+  stable val brandPrimary: Color
+  stable val brandMinor: Color
+  stable val brandInvert: Color
+  stable val secondaryGreenPrimary: Color
+  stable val secondaryGreenDark: Color
+  stable val secondaryGreenLight: Color
+  stable val secondaryBluePrimary: Color
+  stable val secondaryBlueDark: Color
+  stable val secondaryBlueLight: Color
+  stable val secondaryOrangePrimary: Color
+  stable val secondaryOrangeDark: Color
+  stable val secondaryOrangeLight: Color
+  stable val secondaryPurplePrimary: Color
+  stable val secondaryPurpleDark: Color
+  stable val secondaryPurpleLight: Color
+  stable val secondaryYellowPrimary: Color
+  stable val secondaryYellowDark: Color
+  stable val secondaryYellowLight: Color
+  stable val secondaryWhite: Color
+  stable val secondaryBlack: Color
+  <runtime stability> = Stable
+}
+stable class FrontonTypography {
+  stable val headings: Headings
+  stable val body: Body
+  stable val minor: Minor
+  <runtime stability> = Stable
+}
+stable class Headings {
+  stable val display: TextStyle
+  stable val h1: TextStyle
+  stable val h2: TextStyle
+  stable val h3: TextStyle
+  <runtime stability> = Stable
+}
+stable class Body {
+  stable val large: BodyStyle
+  stable val medium: BodyStyle
+  stable val small: BodyStyle
+  <runtime stability> = Stable
+}
+stable class BodyStyle {
+  stable val long: TextStyle
+  stable val accent: TextStyle
+  stable val short: TextStyle
+  stable val subtitle: TextStyle
+  <runtime stability> = Stable
+}
+stable class Minor {
+  stable val caption: TextStyle
+  stable val captionAccent: TextStyle
+  stable val overline: TextStyle
+  <runtime stability> = Stable
+}
+
+unstable class JetnewsApplication {
+  runtime var container: AppContainer
+  <runtime stability> = Unstable
+}
+unstable class AppContainerImpl {
+  unstable val applicationContext: Context
+  unstable val postsRepository$delegate: Lazy<FakePostsRepository>
+  unstable val interestsRepository$delegate: Lazy<FakeInterestsRepository>
+  <runtime stability> = Unstable
+}
+runtime class Success {
+  runtime val data: T
+  <runtime stability> = Parameter(T)
+}
+unstable class Error {
+  unstable val exception: Exception{ kotlin.TypeAliasesKt.Exception }
+  <runtime stability> = Unstable
+}
+stable class Result {
+  <runtime stability> = Stable
+}
+unstable class InterestSection {
+  stable val title: String
+  unstable val interests: List<String>
+  <runtime stability> = Unstable
+}
+stable class TopicSelection {
+  stable val section: String
+  stable val topic: String
+  <runtime stability> = Stable
+}
+unstable class FakeInterestsRepository {
+  unstable val topics$delegate: Lazy<List<InterestSection>>
+  unstable val people$delegate: Lazy<List<String>>
+  unstable val publications$delegate: Lazy<List<String>>
+  unstable val selectedTopics: MutableStateFlow<Set<TopicSelection>>
+  unstable val selectedPeople: MutableStateFlow<Set<String>>
+  unstable val selectedPublications: MutableStateFlow<Set<String>>
+  <runtime stability> = Unstable
+}
+unstable class BlockingFakePostsRepository {
+  unstable val favorites: MutableStateFlow<Set<String>>
+  unstable val postsFeed: MutableStateFlow<PostsFeed?>
+  <runtime stability> = Unstable
+}
+unstable class FakePostsRepository {
+  unstable val favorites: MutableStateFlow<Set<String>>
+  unstable val postsFeed: MutableStateFlow<PostsFeed?>
+  stable var requestCount: Int
+  <runtime stability> = Unstable
+}
+runtime class JetnewsGlanceAppWidgetReceiver {
+  runtime val glanceAppWidget: GlanceAppWidget
+  <runtime stability> = Runtime(GlanceAppWidget)
+}
+stable class DividerDefaults {
+  stable val Thickness: Dp
+  <runtime stability> = Stable
+}
+unstable class JetnewsGlanceAppWidget {
+  unstable val sizeMode: SizeMode
+  <runtime stability> = Unstable
+}
+unstable class JetnewsGlanceColorScheme {
+  runtime val colors: ColorProviders
+  unstable val outlineVariant: ColorProvider
+  <runtime stability> = Unstable
+}
+stable class JetnewsGlanceTextStyles {
+  stable val bodyLarge: TextStyle
+  stable val bodySmall: TextStyle
+  <runtime stability> = Stable
+}
+unstable class Post {
+  stable val id: String
+  stable val title: String
+  stable val subtitle: String?
+  stable val url: String
+  stable val publication: Publication?
+  stable val metadata: Metadata
+  unstable val paragraphs: List<Paragraph>
+  stable val imageId: Int
+  stable val imageThumbId: Int
+  <runtime stability> = Unstable
+}
+stable class Metadata {
+  stable val author: PostAuthor
+  stable val date: String
+  stable val readTimeMinutes: Int
+  <runtime stability> = Stable
+}
+stable class PostAuthor {
+  stable val name: String
+  stable val url: String?
+  <runtime stability> = Stable
+}
+stable class Publication {
+  stable val name: String
+  stable val logoUrl: String
+  <runtime stability> = Stable
+}
+unstable class Paragraph {
+  stable val type: ParagraphType
+  stable val text: String
+  unstable val markups: List<Markup>
+  <runtime stability> = Unstable
+}
+stable class Markup {
+  stable val type: MarkupType
+  stable val start: Int
+  stable val end: Int
+  stable val href: String?
+  <runtime stability> = Stable
+}
+unstable class PostsFeed {
+  unstable val highlightedPost: Post
+  unstable val recommendedPosts: List<Post>
+  unstable val popularPosts: List<Post>
+  unstable val recentPosts: List<Post>
+  unstable val allPosts: List<Post>
+  <runtime stability> = Unstable
+}
+stable class JetnewsDestinations {
+  stable val HOME_ROUTE: String
+  stable val INTERESTS_ROUTE: String
+  <runtime stability> = Stable
+}
+stable class JetnewsNavigationActions {
+  stable val navigateToHome: Function0<Unit>
+  stable val navigateToInterests: Function0<Unit>
+  <runtime stability> = Stable
+}
+stable class MainActivity {
+  <runtime stability> = Stable
+}
+unstable class NoPosts {
+  stable val isLoading: Boolean
+  unstable val errorMessages: List<ErrorMessage>
+  stable val searchInput: String
+  <runtime stability> = Unstable
+}
+unstable class HasPosts {
+  unstable val postsFeed: PostsFeed
+  unstable val selectedPost: Post
+  stable val isArticleOpen: Boolean
+  unstable val favorites: Set<String>
+  stable val isLoading: Boolean
+  unstable val errorMessages: List<ErrorMessage>
+  stable val searchInput: String
+  <runtime stability> = Unstable
+}
+unstable class HomeViewModel {
+  runtime val postsRepository: PostsRepository
+  unstable val viewModelState: MutableStateFlow<HomeViewModelState>
+  unstable val uiState: StateFlow<HomeUiState>
+  <runtime stability> = Unstable
+}
+unstable class PostPreviewParameterProvider {
+  unstable val values: Sequence<Post>
+  <runtime stability> = Unstable
+}
+stable class TabContent {
+  stable val section: Sections
+  stable val content: @[Composable] Function0<Unit>
+  <runtime stability> = Stable
+}
+unstable class InterestsUiState {
+  unstable val topics: List<InterestSection>
+  unstable val people: List<String>
+  unstable val publications: List<String>
+  stable val loading: Boolean
+  <runtime stability> = Unstable
+}
+unstable class InterestsViewModel {
+  runtime val interestsRepository: InterestsRepository
+  unstable val _uiState: MutableStateFlow<InterestsUiState>
+  unstable val uiState: StateFlow<InterestsUiState>
+  unstable val selectedTopics: StateFlow<Set<TopicSelection>>
+  unstable val selectedPeople: StateFlow<Set<String>>
+  unstable val selectedPublications: StateFlow<Set<String>>
+  <runtime stability> = Unstable
+}
+stable class ErrorMessage {
+  stable val id: Long
+  stable val messageId: Int
+  <runtime stability> = Stable
+}

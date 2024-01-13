@@ -1,11 +1,14 @@
 package com.github.starmel.composestatsplugin.way
 
+import com.github.starmel.composestatsplugin.StatsUpdateService
 import com.intellij.codeInsight.hints.*
+import com.intellij.openapi.components.service
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import org.jetbrains.kotlin.psi.KtLiteralStringTemplateEntry
-import org.jetbrains.kotlin.psi.KtStringTemplateExpression
+import org.jetbrains.kotlin.psi.KtFunction
+import org.jetbrains.kotlin.psi.KtNamedFunction
 import javax.swing.JComponent
 import javax.swing.JLabel
 
@@ -23,28 +26,52 @@ class StringLiteralInlayProvider : InlayHintsProvider<NoSettings> {
                 editor: Editor,
                 sink: InlayHintsSink
             ): Boolean {
-                println("expression: ${element.javaClass.simpleName}")
-                if (element.javaClass.simpleName == "KtLiteralStringTemplateEntry") {
+                val stats = editor.project?.service<StatsUpdateService>() ?: return false
 
-                    val psiElement = element
+                println("XXXXX  = ${stats.getStats().size}")
 
-                    val length = element.text.length
+                if (element is KtNamedFunction && hasComposableAnnotation(element)) {
 
-                    sink.addInlineElement(
-                        offset = psiElement.textRange.endOffset,
-                        relatesToPrecedingText = true,
-                        presentation = factory.text(" $length chars"),
-                        placeAtTheEndOfLine = false
-                    )
+                    val composableAnnotation = element.annotationEntries.find { it.shortName?.identifier == "Composable" }
+                        ?: return false.also {
+                            thisLogger().error("No composable annotation found for ${element.name}")
+                        }
+
+                    val funStat = stats.getStats()[element.name] ?: return false.also {
+                        thisLogger().error("No stats found for ${element.name}")
+                    }
 
                     sink.addCodeVisionElement(
                         editor = editor,
-                        offset = psiElement.textRange.endOffset,
+                        offset = composableAnnotation.textOffset,
                         priority = 0,
-                        presentation = factory.text("$length chars *")
+                        presentation = factory.text("Skippable: ${funStat.isSkippable} Restartable: ${funStat.isRestartable}} ReadOnly: ${funStat.isReadOnly}")
                     )
+
+//                    element.valueParameters.forEach { parameterElement ->
+//
+//                        val paramStat = funStat.parameters.find { param -> param.name == parameterElement.name }
+//                            ?: return false.also {
+//                                thisLogger().error("No stats found for ${element.name}}")
+//                            }
+//
+//                        sink.addInlineElement(
+//                            offset = parameterElement.textOffset - 1,
+//                            relatesToPrecedingText = true,
+//                            presentation = factory.roundWithBackgroundAndSmallInset(
+//                                factory.text(if (paramStat.isStable) "Stable" else "Unstable"),
+//                            ),
+//                            placeAtTheEndOfLine = false
+//                        )
+//                    }
+                } else {
+//                    println("Element type: ${element.javaClass.name} - ${element.toString()}")
                 }
                 return true
+            }
+
+            fun hasComposableAnnotation(function: KtFunction): Boolean {
+                return function.annotationEntries.any { it.shortName?.identifier == "Composable" }
             }
         }
     }
