@@ -1,6 +1,5 @@
-package com.github.starmel.composestatsplugin.way
+package com.github.starmel.composestatsplugin.report
 
-import com.github.starmel.composestatsplugin.StatsUpdateService
 import com.intellij.codeInsight.hints.*
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
@@ -28,16 +27,16 @@ class StringLiteralInlayProvider : InlayHintsProvider<NoSettings> {
             ): Boolean {
                 val stats = editor.project?.service<StatsUpdateService>() ?: return false
 
-                println("XXXXX  = ${stats.getStats().size}")
-
                 if (element is KtNamedFunction && hasComposableAnnotation(element)) {
 
-                    val composableAnnotation = element.annotationEntries.find { it.shortName?.identifier == "Composable" }
-                        ?: return false.also {
-                            thisLogger().error("No composable annotation found for ${element.name}")
-                        }
+                    val composableAnnotation =
+                        element.annotationEntries.find { it.shortName?.identifier == "Composable" }
+                            ?: return false.also {
+                                thisLogger().error("No composable annotation found for ${element.name}")
+                            }
 
-                    val funStat = stats.getStats()[element.name] ?: return false.also {
+                    val name = element.name ?: return false
+                    val funStat = stats.functionStats(name) ?: return false.also {
                         thisLogger().error("No stats found for ${element.name}")
                     }
 
@@ -45,7 +44,7 @@ class StringLiteralInlayProvider : InlayHintsProvider<NoSettings> {
                         editor = editor,
                         offset = composableAnnotation.textOffset,
                         priority = 0,
-                        presentation = factory.text("Skippable: ${funStat.isSkippable} Restartable: ${funStat.isRestartable}} ReadOnly: ${funStat.isReadOnly}")
+                        presentation = factory.text("Skippable: ${funStat.isSkippable} Restartable: ${funStat.isRestartable} ReadOnly: ${funStat.isReadOnly}")
                     )
 
 //                    element.valueParameters.forEach { parameterElement ->

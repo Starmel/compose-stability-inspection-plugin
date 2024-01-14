@@ -1,6 +1,6 @@
-package com.github.starmel.composestatsplugin.parser
+package com.github.starmel.composestatsplugin.report.parser
 
-import com.github.starmel.composestatsplugin.parser.model.FunctionStats
+import com.github.starmel.composestatsplugin.report.parser.model.FunctionStats
 
 class FunctionReportParser {
 

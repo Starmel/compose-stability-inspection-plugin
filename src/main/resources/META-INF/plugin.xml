@@ -10,19 +10,37 @@
     <resource-bundle>messages.MyBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
+
+        <!-- From Report-->
+
         <localInspection language="kotlin"
-                         bundle="messages.InspectionBundle"
-                         key="compose.blabla"
                          groupPath="Kotlin"
-                         groupBundle="messages.InspectionsBundle"
-                         groupKey="group.names.probable.bugs"
+                         groupName="Compose stable inspection"
                          enabledByDefault="true"
                          level="WARNING"
-                         implementationClass="com.github.starmel.composestatsplugin.way.CustomWarningInspection"/>
-        <codeInsight.inlayProvider language="kotlin" implementationClass="com.github.starmel.composestatsplugin.way.StringLiteralInlayProvider"/>
+                         implementationClass="com.github.starmel.composestatsplugin.report.FunctionSkippableInspection"/>
+        <localInspection language="kotlin"
+                         groupPath="Kotlin"
+                         groupName="Compose stable inspection"
+                         enabledByDefault="true"
+                         level="WARNING"
+                         implementationClass="com.github.starmel.composestatsplugin.report.ClassStabilityWarningInspection"/>
+
+        <!-- On Fly -->
+
+        <localInspection language="kotlin"
+                         groupPath="Kotlin"
+                         groupName="Compose stable inspection"
+                         enabledByDefault="true"
+                         level="WARNING"
+                         implementationClass="com.github.starmel.composestatsplugin.fly.FlyClassStabilityInspection"/>
+
+        <codeInsight.inlayProvider language="kotlin"
+                                   implementationClass="com.github.starmel.composestatsplugin.report.StringLiteralInlayProvider"/>
     </extensions>
 
     <applicationListeners>
-        <listener class="com.github.starmel.composestatsplugin.listeners.MyApplicationActivationListener" topic="com.intellij.openapi.application.ApplicationActivationListener"/>
+        <listener class="com.github.starmel.composestatsplugin.listeners.MyApplicationActivationListener"
+                  topic="com.intellij.openapi.application.ApplicationActivationListener"/>
     </applicationListeners>
 </idea-plugin>

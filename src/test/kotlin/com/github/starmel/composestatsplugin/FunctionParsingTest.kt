@@ -1,7 +1,7 @@
 package com.github.starmel.composestatsplugin
 
-import com.github.starmel.composestatsplugin.parser.FunctionReportParser
-import com.github.starmel.composestatsplugin.parser.model.FunctionStats
+import com.github.starmel.composestatsplugin.report.parser.FunctionReportParser
+import com.github.starmel.composestatsplugin.report.parser.model.FunctionStats
 import org.junit.Test
 import java.io.File
 import kotlin.test.assertEquals

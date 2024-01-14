@@ -1,4 +1,4 @@
-package com.github.starmel.composestatsplugin
+package com.github.starmel.composestatsplugin.report
 
 import com.intellij.codeInsight.hints.presentation.BasePresentation
 import com.intellij.codeInsight.hints.presentation.InlayTextMetricsStorage

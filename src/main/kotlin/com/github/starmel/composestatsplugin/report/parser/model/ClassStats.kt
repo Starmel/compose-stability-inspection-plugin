@@ -1,4 +1,4 @@
-package com.github.starmel.composestatsplugin.parser.model
+package com.github.starmel.composestatsplugin.report.parser.model
 
 data class ClassStats(
     val name: String,

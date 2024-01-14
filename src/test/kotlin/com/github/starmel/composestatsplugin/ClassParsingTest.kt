@@ -1,7 +1,7 @@
 package com.github.starmel.composestatsplugin
 
-import com.github.starmel.composestatsplugin.parser.ClassReportParser
-import com.github.starmel.composestatsplugin.parser.model.ClassStats
+import com.github.starmel.composestatsplugin.report.parser.ClassReportParser
+import com.github.starmel.composestatsplugin.report.parser.model.ClassStats
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
