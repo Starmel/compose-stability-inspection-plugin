@@ -13,30 +13,37 @@
 
         <!-- From Report-->
 
-        <localInspection language="kotlin"
-                         groupPath="Kotlin"
-                         groupName="Compose stable inspection"
-                         enabledByDefault="true"
-                         level="WARNING"
-                         implementationClass="com.github.starmel.composestatsplugin.report.FunctionSkippableInspection"/>
-        <localInspection language="kotlin"
-                         groupPath="Kotlin"
-                         groupName="Compose stable inspection"
-                         enabledByDefault="true"
-                         level="WARNING"
-                         implementationClass="com.github.starmel.composestatsplugin.report.ClassStabilityWarningInspection"/>
+<!--        <localInspection language="kotlin"-->
+<!--                         groupPath="Kotlin"-->
+<!--                         groupName="Compose stable inspection"-->
+<!--                         enabledByDefault="true"-->
+<!--                         level="WARNING"-->
+<!--                         implementationClass="com.github.starmel.composestatsplugin.report.FunctionSkippableInspection"/>-->
+<!--        <localInspection language="kotlin"-->
+<!--                         groupPath="Kotlin"-->
+<!--                         groupName="Compose stable inspection"-->
+<!--                         enabledByDefault="true"-->
+<!--                         level="WARNING"-->
+<!--                         implementationClass="com.github.starmel.composestatsplugin.report.ClassStabilityWarningInspection"/>-->
 
         <!-- On Fly -->
 
         <localInspection language="kotlin"
                          groupPath="Kotlin"
-                         groupName="Compose stable inspection"
+                         groupName="Compose"
                          enabledByDefault="true"
                          level="WARNING"
-                         implementationClass="com.github.starmel.composestatsplugin.fly.FlyClassStabilityInspection"/>
+                         implementationClass="com.github.starmel.composestatsplugin.fly.OnFlyClassStabilityInspection"/>
 
-        <codeInsight.inlayProvider language="kotlin"
-                                   implementationClass="com.github.starmel.composestatsplugin.report.StringLiteralInlayProvider"/>
+        <localInspection language="kotlin"
+                         groupPath="Kotlin"
+                         groupName="Compose"
+                         enabledByDefault="true"
+                         level="WARNING"
+                         implementationClass="com.github.starmel.composestatsplugin.fly.OnFlyMethodStabilityInspection"/>
+
+<!--        <codeInsight.inlayProvider language="kotlin"-->
+<!--                                   implementationClass="com.github.starmel.composestatsplugin.report.StringLiteralInlayProvider"/>-->
     </extensions>
 
     <applicationListeners>

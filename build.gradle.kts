@@ -126,6 +126,7 @@ tasks {
     runIde {
         autoReloadPlugins.set(true)
         jvmArgs = listOf("-XX:+UnlockDiagnosticVMOptions")
+        ideDir.set(file("/Users/user/Applications/Android Studio Iguana 2023.2.1 Beta 2.app/Contents"))
     }
 
     signPlugin {
