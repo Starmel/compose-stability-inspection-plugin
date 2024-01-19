@@ -1,17 +1,15 @@
 package com.github.starmel.composestatsplugin.fly
 
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.module.ModuleUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
-import org.jetbrains.kotlin.builtins.isFunctionTypeOrSubtype
-import org.jetbrains.kotlin.descriptors.ClassDescriptor
-import org.jetbrains.kotlin.idea.caches.resolve.analyze
+import org.jetbrains.kotlin.descriptors.CallableDescriptor
+import org.jetbrains.kotlin.idea.caches.resolve.resolveToDescriptorIfAny
 import org.jetbrains.kotlin.idea.codeinsight.api.classic.inspections.AbstractKotlinInspection
 import org.jetbrains.kotlin.idea.util.findAnnotation
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtNamedFunction
-import org.jetbrains.kotlin.resolve.BindingContext
-import org.jetbrains.kotlin.types.KotlinType
 
 class OnFlyMethodStabilityInspection : AbstractKotlinInspection() {
 
@@ -39,15 +37,15 @@ class OnFlyMethodStabilityInspection : AbstractKotlinInspection() {
                         return
                     }
 
+                    val composeFunctionModule = ModuleUtil.findModuleForPsiElement(element) ?: return
+
                     element.valueParameters.forEach { ktParameter ->
                         val typeReference = ktParameter.typeReference ?: return@forEach
 
-                        val descriptor = typeReference.analyze().get(BindingContext.TYPE, typeReference)
-                            ?.constructor?.declarationDescriptor as? ClassDescriptor
+                        val ktType = (ktParameter.resolveToDescriptorIfAny() as? CallableDescriptor)?.returnType
+                            ?: return@forEach
 
-                        val ktType = (descriptor?.defaultType as? KotlinType) ?: return@forEach
-
-                        if (!ktType.isFunctionTypeOrSubtype && !ktType.isStable(holder.project)) {
+                        if (!ktType.isStable(holder.project, composeFunctionModule)) {
                             holder.registerProblem(typeReference, unstableArgumentError)
                         }
                     }

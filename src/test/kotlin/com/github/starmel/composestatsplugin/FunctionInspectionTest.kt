@@ -61,28 +61,6 @@ class FunctionInspectionTest : BasePlatformTestCase() {
             .has(unstableArgumentError, 1)
     }
 
-//    @Ignore("Due complexity of inspection do not handle this case")
-//    fun `test method call cause unstable class`() {
-//        highlight(
-//            """
-//        class UnstableClass {
-//            var info = ""
-//        }
-//
-//        fun createUnstableClass(): UnstableClass = UnstableClass()
-//
-//        class ImplicitlyUnstableClass {
-//            var info = createUnstableClass()
-//        }
-//
-//        @Composable
-//        fun Test(unstableClass: ImplicitlyUnstableClass) { }
-//        """.trimIndent()
-//        )
-//            .has(unstableClassError, 2)
-//            .has(mutablePropertyError, 1)
-//    }
-
     fun `test implicit property declaration with callable expression`() {
         highlight(
             """
@@ -195,6 +173,19 @@ class FunctionInspectionTest : BasePlatformTestCase() {
             """
         @Composable
         fun Test(function: (String, List<String>) -> Unit) { }
+        """.trimIndent()
+        )
+            .has(unstableArgumentError, 1)
+    }
+
+    fun `test function argument of Unstable type is unstable`() {
+        highlight(
+            """
+        class UnstableClass {
+            var info = ""
+        }
+        @Composable
+        fun Test(function: (UnstableClass) -> Unit) { }
         """.trimIndent()
         )
             .has(unstableArgumentError, 1)
@@ -313,6 +304,59 @@ class FunctionInspectionTest : BasePlatformTestCase() {
             .has(unstableArgumentError, 0)
     }
 
+    fun `test none if used ImmutableList`() {
+        highlight(
+            """
+        import kotlinx.collections.immutable.ImmutableList
+        
+        @Composable
+        fun Test(unstableClass: ImmutableList<String>) { }
+        """.trimIndent()
+        )
+            .has(unstableArgumentError, 0)
+    }
+
+    fun `test none if used ImmutableSet`() {
+        highlight(
+            """
+        import kotlinx.collections.immutable.ImmutableSet
+        
+        @Composable
+        fun Test(unstableClass: ImmutableSet<String>) { }
+        """.trimIndent()
+        )
+            .has(unstableArgumentError, 0)
+    }
+
+    fun `test none if used ImmutableMap`() {
+        highlight(
+            """
+        import kotlinx.collections.immutable.ImmutableMap
+        
+        @Composable
+        fun Test(unstableClass: ImmutableMap<String, String>) { }
+        """.trimIndent()
+        )
+            .has(unstableArgumentError, 0)
+    }
+
+    fun `test none if ImmutableList used as property`() {
+        highlight(
+            """
+        import kotlinx.collections.immutable.ImmutableList
+        
+        class StableClass {
+            val info: ImmutableList<String> = ImmutableList.of()
+        }
+        @Composable
+        fun Test(unstableClass: StableClass) { }
+        """.trimIndent()
+        )
+            .has(unstableArgumentError, 0)
+    }
+
+    //region: test utils
+
     private fun highlight(@Language("kotlin") text: String): List<HighlightInfo> {
         myFixture.configureByText(
             "Composable.kt", """
@@ -321,7 +365,15 @@ class FunctionInspectionTest : BasePlatformTestCase() {
             annotation class Composable
             annotation class Immutable
             annotation class Stable
-            $text 
+        """.trimIndent()
+        )
+        myFixture.configureByText(
+            "kotlinx.kt", """
+            package kotlinx.collections.immutable
+           
+            interface ImmutableList<T>
+            interface ImmutableSet<T>
+            interface ImmutableMap<K, V>
         """.trimIndent()
         )
         myFixture.configureByText(
@@ -336,8 +388,6 @@ class FunctionInspectionTest : BasePlatformTestCase() {
         return myFixture.doHighlighting()
     }
 
-    // TODO: ImmutableList, ImmutableSet, ImmutableMap
-
     private fun List<HighlightInfo>.has(description: String, count: Int = 1) = apply {
         count { it.description == description }.let { findingCount ->
             if (findingCount != count) {
@@ -349,6 +399,8 @@ class FunctionInspectionTest : BasePlatformTestCase() {
             }
         }
     }
+
+    //endregion
 
     override fun getTestDataPath() = "src/test/testData/rename"
 }

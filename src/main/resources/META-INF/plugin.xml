@@ -28,12 +28,12 @@
 
         <!-- On Fly -->
 
-        <localInspection language="kotlin"
-                         groupPath="Kotlin"
-                         groupName="Compose"
-                         enabledByDefault="true"
-                         level="WARNING"
-                         implementationClass="com.github.starmel.composestatsplugin.fly.OnFlyClassStabilityInspection"/>
+<!--        <localInspection language="kotlin"-->
+<!--                         groupPath="Kotlin"-->
+<!--                         groupName="Compose"-->
+<!--                         enabledByDefault="true"-->
+<!--                         level="WARNING"-->
+<!--                         implementationClass="com.github.starmel.composestatsplugin.fly.OnFlyClassStabilityInspection"/>-->
 
         <localInspection language="kotlin"
                          groupPath="Kotlin"
