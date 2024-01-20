@@ -1,7 +1,6 @@
 package com.github.starmel.composestatsplugin
 
 import com.github.starmel.composestatsplugin.fly.OnFlyMethodStabilityInspection
-import com.github.starmel.composestatsplugin.fly.unstableArgumentError
 import com.intellij.codeInsight.daemon.impl.HighlightInfo
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
@@ -27,7 +26,7 @@ class FunctionInspectionTest : BasePlatformTestCase() {
         fun Test(unstableClass: UnstableClass) { }
         """.trimIndent()
         )
-            .has(unstableArgumentError, 1)
+            .contains("Composable unstable", 1)
     }
 
     fun `test mutable constructor parameter cause unstable class`() {
@@ -41,7 +40,7 @@ class FunctionInspectionTest : BasePlatformTestCase() {
         fun Test(unstableClass: UnstableClass) { }
         """.trimIndent()
         )
-            .has(unstableArgumentError, 1)
+            .contains("Composable unstable", 1)
     }
 
     fun `test unstable constructor parameter cause unstable class`() {
@@ -58,7 +57,7 @@ class FunctionInspectionTest : BasePlatformTestCase() {
         fun Test(unstableClass: ImplicitlyUnstableClass) { }
         """.trimIndent()
         )
-            .has(unstableArgumentError, 1)
+            .contains("Composable unstable", 1)
     }
 
     fun `test implicit property declaration with callable expression`() {
@@ -74,7 +73,7 @@ class FunctionInspectionTest : BasePlatformTestCase() {
         fun Test(implicitPropertyDeclaration: ImplicitPropertyDeclaration) { }
         """.trimIndent()
         )
-            .has(unstableArgumentError, 1)
+            .contains("Composable unstable", 1)
     }
 
     fun `test implicit property declaration with callable expression and type`() {
@@ -90,7 +89,7 @@ class FunctionInspectionTest : BasePlatformTestCase() {
         fun Test(implicitPropertyDeclaration: ImplicitPropertyDeclaration) { }
         """.trimIndent()
         )
-            .has(unstableArgumentError, 1)
+            .contains("Composable unstable", 1)
     }
 
     fun `test class depends on unstable type marked as unstable`() {
@@ -106,7 +105,7 @@ class FunctionInspectionTest : BasePlatformTestCase() {
         fun Test(unstableClass: ImplicitlyUnstableClass) { }
         """.trimIndent()
         )
-            .has(unstableArgumentError, 1)
+            .contains("Composable unstable", 1)
     }
 
     fun `test class depends on unstable type marked as unstable recursive`() {
@@ -125,7 +124,7 @@ class FunctionInspectionTest : BasePlatformTestCase() {
         fun Test(unstableClass: ImplicitlyUnstableClass2Level) { }
         """.trimIndent()
         )
-            .has(unstableArgumentError, 1)
+            .contains("Composable unstable", 1)
     }
 
     fun `test function argument with no params is stable`() {
@@ -135,7 +134,7 @@ class FunctionInspectionTest : BasePlatformTestCase() {
         fun Test(function: () -> Unit) { }
         """.trimIndent()
         )
-            .has(unstableArgumentError, 0)
+            .contains("Composable unstable", 0)
     }
 
     fun `test function argument of String is stable`() {
@@ -145,7 +144,7 @@ class FunctionInspectionTest : BasePlatformTestCase() {
         fun Test(function: (String) -> Unit) { }
         """.trimIndent()
         )
-            .has(unstableArgumentError, 0)
+            .contains("Composable unstable", 0)
     }
 
     fun `test function argument of List is unstable`() {
@@ -155,7 +154,7 @@ class FunctionInspectionTest : BasePlatformTestCase() {
         fun Test(function: (List<String>) -> Unit) { }
         """.trimIndent()
         )
-            .has(unstableArgumentError, 1)
+            .contains("Composable unstable", 1)
     }
 
     fun `test function argument of two String is stable`() {
@@ -165,7 +164,7 @@ class FunctionInspectionTest : BasePlatformTestCase() {
         fun Test(function: (String, String) -> Unit) { }
         """.trimIndent()
         )
-            .has(unstableArgumentError, 0)
+            .contains("Composable unstable", 0)
     }
 
     fun `test function argument of String and List is unstable`() {
@@ -175,7 +174,7 @@ class FunctionInspectionTest : BasePlatformTestCase() {
         fun Test(function: (String, List<String>) -> Unit) { }
         """.trimIndent()
         )
-            .has(unstableArgumentError, 1)
+            .contains("Composable unstable", 1)
     }
 
     fun `test function argument of Unstable type is unstable`() {
@@ -188,7 +187,7 @@ class FunctionInspectionTest : BasePlatformTestCase() {
         fun Test(function: (UnstableClass) -> Unit) { }
         """.trimIndent()
         )
-            .has(unstableArgumentError, 1)
+            .contains("Composable unstable", 1)
     }
 
     fun `test List cause unstable class as constructor argument`() {
@@ -201,7 +200,7 @@ class FunctionInspectionTest : BasePlatformTestCase() {
         fun Test(unstableClass: UnstableClass) { }
         """.trimIndent()
         )
-            .has(unstableArgumentError, 1)
+            .contains("Composable unstable", 1)
     }
 
     fun `test List cause unstable class as property`() {
@@ -214,7 +213,7 @@ class FunctionInspectionTest : BasePlatformTestCase() {
         fun Test(unstableClass: UnstableClass) { }
         """.trimIndent()
         )
-            .has(unstableArgumentError, 1)
+            .contains("Composable unstable", 1)
     }
 
     fun `test Set cause unstable class`() {
@@ -227,7 +226,7 @@ class FunctionInspectionTest : BasePlatformTestCase() {
         fun Test(unstableClass: UnstableClass) { }
         """.trimIndent()
         )
-            .has(unstableArgumentError, 1)
+            .contains("Composable unstable", 1)
     }
 
     fun `test Map cause unstable class`() {
@@ -240,7 +239,7 @@ class FunctionInspectionTest : BasePlatformTestCase() {
         fun Test(unstableClass: UnstableClass) { }
         """.trimIndent()
         )
-            .has(unstableArgumentError, 1)
+            .contains("Composable unstable", 1)
     }
 
     fun `test Suppress if Stable annotation is present and constructor parameter is mutable`() {
@@ -254,7 +253,7 @@ class FunctionInspectionTest : BasePlatformTestCase() {
         fun Test(unstableClass: UnstableClass) { }
         """.trimIndent()
         )
-            .has(unstableArgumentError, 0)
+            .contains("Composable unstable", 0)
     }
 
     fun `test Suppress if Stable annotation is present and property is mutable`() {
@@ -268,7 +267,7 @@ class FunctionInspectionTest : BasePlatformTestCase() {
         fun Test(unstableClass: UnstableClass) { }
         """.trimIndent()
         )
-            .has(unstableArgumentError, 0)
+            .contains("Composable unstable", 0)
     }
 
     fun `test none if Suppressed type used as constructor parameter`() {
@@ -284,7 +283,7 @@ class FunctionInspectionTest : BasePlatformTestCase() {
         fun Test(unstableClass: ImplicitlyUnstableClass) { }
         """.trimIndent()
         )
-            .has(unstableArgumentError, 0)
+            .contains("Composable unstable", 0)
     }
 
     fun `test none if Suppressed type used as property`() {
@@ -301,7 +300,7 @@ class FunctionInspectionTest : BasePlatformTestCase() {
         fun Test(unstableClass: ImplicitlyUnstableClass) { }
         """.trimIndent()
         )
-            .has(unstableArgumentError, 0)
+            .contains("Composable unstable", 0)
     }
 
     fun `test none if used ImmutableList`() {
@@ -313,7 +312,7 @@ class FunctionInspectionTest : BasePlatformTestCase() {
         fun Test(unstableClass: ImmutableList<String>) { }
         """.trimIndent()
         )
-            .has(unstableArgumentError, 0)
+            .contains("Composable unstable", 0)
     }
 
     fun `test none if used ImmutableSet`() {
@@ -325,7 +324,7 @@ class FunctionInspectionTest : BasePlatformTestCase() {
         fun Test(unstableClass: ImmutableSet<String>) { }
         """.trimIndent()
         )
-            .has(unstableArgumentError, 0)
+            .contains("Composable unstable", 0)
     }
 
     fun `test none if used ImmutableMap`() {
@@ -337,7 +336,7 @@ class FunctionInspectionTest : BasePlatformTestCase() {
         fun Test(unstableClass: ImmutableMap<String, String>) { }
         """.trimIndent()
         )
-            .has(unstableArgumentError, 0)
+            .contains("Composable unstable", 0)
     }
 
     fun `test none if ImmutableList used as property`() {
@@ -352,7 +351,19 @@ class FunctionInspectionTest : BasePlatformTestCase() {
         fun Test(unstableClass: StableClass) { }
         """.trimIndent()
         )
-            .has(unstableArgumentError, 0)
+            .contains("Composable unstable", 0)
+    }
+
+    fun `test typealias to stable type is stable`() {
+        highlight(
+            """
+        typealias StableType = String
+        
+        @Composable
+        fun Test(unstableClass: StableType) { }
+        """.trimIndent()
+        )
+            .contains("Composable unstable", 0)
     }
 
     //region: test utils
@@ -390,6 +401,18 @@ class FunctionInspectionTest : BasePlatformTestCase() {
 
     private fun List<HighlightInfo>.has(description: String, count: Int = 1) = apply {
         count { it.description == description }.let { findingCount ->
+            if (findingCount != count) {
+                TestCase.assertEquals(
+                    "Expected to find $description $count times in ${this.joinToString("\n")}",
+                    count,
+                    findingCount
+                )
+            }
+        }
+    }
+
+    private fun List<HighlightInfo>.contains(description: String, count: Int = 1) = apply {
+        count { it.description?.contains(description) == true }.let { findingCount ->
             if (findingCount != count) {
                 TestCase.assertEquals(
                     "Expected to find $description $count times in ${this.joinToString("\n")}",
