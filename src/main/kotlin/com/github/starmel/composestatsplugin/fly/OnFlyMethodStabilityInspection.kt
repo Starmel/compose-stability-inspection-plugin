@@ -1,9 +1,9 @@
 package com.github.starmel.composestatsplugin.fly
 
+import ComposeStatsBundle
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleUtil
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import org.jetbrains.kotlin.backend.jvm.ir.psiElement
 import org.jetbrains.kotlin.builtins.getValueParameterTypesFromFunctionType
@@ -15,12 +15,12 @@ import org.jetbrains.kotlin.idea.caches.resolve.resolveToDescriptorIfAny
 import org.jetbrains.kotlin.idea.codeinsight.api.classic.inspections.AbstractKotlinInspection
 import org.jetbrains.kotlin.idea.util.findAnnotation
 import org.jetbrains.kotlin.name.FqName
-import org.jetbrains.kotlin.psi.KtNamedFunction
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
 import org.jetbrains.kotlin.types.KotlinType
 import org.jetbrains.kotlin.types.typeUtil.isEnum
 import org.jetbrains.kotlin.types.typeUtil.isInterface
 import org.jetbrains.kotlinx.serialization.compiler.resolve.toClassDescriptor
+import org.jetbrains.kotlin.psi.namedFunctionVisitor
 
 class OnFlyMethodStabilityInspection : AbstractKotlinInspection() {
 
@@ -28,45 +28,36 @@ class OnFlyMethodStabilityInspection : AbstractKotlinInspection() {
         return "Unstable type used as Compose method argument"
     }
 
-    override fun getStaticDescription(): String? {
+    override fun getStaticDescription(): String {
         return "Unstable type used as Compose method argument"
     }
 
-    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor =
+        namedFunctionVisitor { namedFunction ->
+            val hasComposableAnnotation =
+                namedFunction.findAnnotation(FqName("androidx.compose.runtime.Composable")) != null
 
-        return object : PsiElementVisitor() {
+            if (!hasComposableAnnotation) {
+                return@namedFunctionVisitor
+            }
 
-            override fun visitElement(element: PsiElement) {
-                super.visitElement(element)
+            val composeFunctionModule = ModuleUtil.findModuleForPsiElement(namedFunction) ?: return@namedFunctionVisitor
 
-                if (element is KtNamedFunction) {
+            namedFunction.valueParameters.forEach { ktParameter ->
+                val typeReference = ktParameter.typeReference ?: return@forEach
 
-                    val hasComposableAnnotation =
-                        element.findAnnotation(FqName("androidx.compose.runtime.Composable")) != null
+                val ktType = (ktParameter.resolveToDescriptorIfAny() as? CallableDescriptor)?.returnType
+                    ?: return@forEach
 
-                    if (!hasComposableAnnotation) {
-                        return
-                    }
-
-                    val composeFunctionModule = ModuleUtil.findModuleForPsiElement(element) ?: return
-
-                    element.valueParameters.forEach { ktParameter ->
-                        val typeReference = ktParameter.typeReference ?: return@forEach
-
-                        val ktType = (ktParameter.resolveToDescriptorIfAny() as? CallableDescriptor)?.returnType
-                            ?: return@forEach
-
-                        val instabilityCause = ktType.getInstabilityCause(composeFunctionModule)
-                        if (instabilityCause != null) {
-                            holder.registerProblem(typeReference, "Composable unstable: $instabilityCause")
-                        }
-                    }
-                    println("Found composable function: ${element.name}")
+                val instabilityCause = ktType.getInstabilityCause(composeFunctionModule)
+                if (instabilityCause != null) {
+                    holder.registerProblem(typeReference, ComposeStatsBundle.message("compose.unstable", instabilityCause))
                 }
             }
+            println(ComposeStatsBundle.message("found.composable.function", namedFunction.name.orEmpty()))
         }
-    }
 }
+
 
 fun KotlinType.hasStableComposeAnnotation(): Boolean {
     return toClassDescriptor?.annotations?.any {
@@ -118,21 +109,19 @@ fun KotlinType.getInstabilityCause(composeFunctionModule: Module): String? {
         return null
     } else {
         if (isInterface()) {
-            return "$shortName is an interface"
+            return ComposeStatsBundle.message("cause.is.interface", shortName.toString())
         }
 
-        memberScope.getContributedDescriptors()
+        memberScope.getContributedDescriptors().filterIsInstance<PropertyDescriptorImpl>()
             .forEach { descriptor ->
-                if (descriptor is PropertyDescriptorImpl) {
                     if (descriptor.isVar) {
-                        return "$shortName contains mutable property '${descriptor.name}'"
+                        return ComposeStatsBundle.message("cause.contains.mutable.property", shortName.toString(), descriptor.name)
                     } else {
                         val propKtClass = descriptor.type
 
                         val instabilityCause = propKtClass.getInstabilityCause(composeFunctionModule)
                         if (instabilityCause != null) {
-                            return "$shortName contains unstable property '${descriptor.name}' with type '$instabilityCause'"
-                        }
+                            return ComposeStatsBundle.message("cause.contains.unstable.property", shortName.toString(), descriptor.name, instabilityCause)
                     }
                 }
             }
@@ -144,7 +133,7 @@ fun KotlinType.getInstabilityCause(composeFunctionModule: Module): String? {
     val typeModule = ModuleUtil.findModuleForPsiElement(psiElement) ?: return "$shortName is cannot be resolved (#2)"
 
     if (typeModule != composeFunctionModule) {
-        return "$shortName is not in the same module as the composable function"
+        return ComposeStatsBundle.message("cause.is.not.same.module", shortName.toString())
     }
 
     return null

@@ -7,7 +7,7 @@
     <depends>com.intellij.modules.platform</depends>
     <depends>org.jetbrains.kotlin</depends>
 
-    <resource-bundle>messages.MyBundle</resource-bundle>
+    <resource-bundle>messages.ComposeStatsBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
 
