@@ -366,6 +366,137 @@ class FunctionInspectionTest : BasePlatformTestCase() {
             .contains("Composable unstable", 0)
     }
 
+    fun `test sealed class stable`() {
+        highlight(
+            """
+        sealed class SealedClass {
+            class SealedClassChild : SealedClass()
+        }
+        
+        @Composable
+        fun Test(unstableClass: SealedClass.SealedClassChild) { }
+        """.trimIndent()
+        )
+            .contains("Composable unstable", 0)
+    }
+
+    fun `test sealed class itself stable`() {
+        highlight(
+            """
+        sealed class SealedClass {
+            class SealedClassChild : SealedClass()
+        }
+        
+        @Composable
+        fun Test(unstableClass: SealedClass) { }
+        """.trimIndent()
+        )
+            .contains("Composable unstable", 0)
+    }
+
+    fun `test sealed class unstable child is unstable`() {
+        highlight(
+            """
+        sealed class SealedClass {
+            class SealedClassChild : SealedClass() { var info = "" }
+        }
+        
+        @Composable
+        fun Test(unstableClass: SealedClass.SealedClassChild) { }
+        """.trimIndent()
+        )
+            .contains("Composable unstable", 1)
+    }
+
+
+    fun `test none if sealed class unstable child marked as Immutable`() {
+        highlight(
+            """
+        @Immutable
+        sealed class SealedClass {
+            class SealedClassChild : SealedClass() { var info = "" }
+        }
+        
+        @Composable
+        fun Test(unstableClass: SealedClass.SealedClassChild) { }
+        """.trimIndent()
+        )
+            .contains("Composable unstable", 0)
+    }
+
+    fun `test none if sealed class unstable child marked as Stable`() {
+        highlight(
+            """
+        @Stable
+        sealed class SealedClass {
+            class SealedClassChild : SealedClass() { var info = "" }
+        }
+        
+        @Composable
+        fun Test(unstableClass: SealedClass.SealedClassChild) { }
+        """.trimIndent()
+        )
+            .contains("Composable unstable", 0)
+    }
+
+    fun `test same module interface is stable`() {
+        highlight(
+            """
+        interface StableInterface
+        
+        @Composable
+        fun Test(stable: StableInterface) { }
+        """.trimIndent()
+        )
+            .contains("Composable unstable", 0)
+    }
+
+    fun `test recursive stable class is stable`() {
+        highlight(
+            """
+        class StableClass {
+            val info: StableClass = StableClass()
+        }
+        
+        @Composable
+        fun Test(tableClass: StableClass) { }
+        """.trimIndent()
+        )
+            .contains("Composable unstable", 0)
+    }
+
+    fun `test recursive unstable class is unstable`() {
+        highlight(
+            """
+        class UnstableClass {
+            var info: UnstableClass = UnstableClass()
+        }
+        
+        @Composable
+        fun Test(unstableClass: UnstableClass) { }
+        """.trimIndent()
+        )
+            .contains("Composable unstable", 1)
+    }
+
+    fun `test recursive 2 stable class is stable`() {
+        highlight(
+            """
+        class StableClass {
+            val info: InfoClass = InfoClass()
+            
+            class InfoClass {
+                val aaa: InfoClass = InfoClass()
+            }
+        }
+        
+        @Composable
+        fun Test(unstableClass: StableClass) { }
+        """.trimIndent()
+        )
+            .contains("Composable unstable", 0)
+    }
+
     //region: test utils
 
     private fun highlight(@Language("kotlin") text: String): List<HighlightInfo> {
@@ -424,7 +555,5 @@ class FunctionInspectionTest : BasePlatformTestCase() {
     }
 
     //endregion
-
-    override fun getTestDataPath() = "src/test/testData/rename"
 }
 
