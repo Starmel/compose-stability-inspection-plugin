@@ -1,9 +1,9 @@
 package com.github.starmel.composestatsplugin.fly
 
+import com.github.starmel.composestatsplugin.ComposeStatsBundle
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleUtil
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import org.jetbrains.kotlin.backend.jvm.ir.psiElement
 import org.jetbrains.kotlin.builtins.getValueParameterTypesFromFunctionType
@@ -18,7 +18,7 @@ import org.jetbrains.kotlin.idea.caches.resolve.resolveToDescriptorIfAny
 import org.jetbrains.kotlin.idea.codeinsight.api.classic.inspections.AbstractKotlinInspection
 import org.jetbrains.kotlin.idea.util.findAnnotation
 import org.jetbrains.kotlin.name.FqName
-import org.jetbrains.kotlin.psi.KtNamedFunction
+import org.jetbrains.kotlin.psi.namedFunctionVisitor
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
 import org.jetbrains.kotlin.resolve.descriptorUtil.parents
 import org.jetbrains.kotlin.types.KotlinType
@@ -31,44 +31,35 @@ class OnFlyMethodStabilityInspection : AbstractKotlinInspection() {
         return "Unstable type used as Compose method argument"
     }
 
-    override fun getStaticDescription(): String? {
+    override fun getStaticDescription(): String {
         return "Unstable type used as Compose method argument"
     }
 
-    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor =
+        namedFunctionVisitor { namedFunction ->
+            val hasComposableAnnotation =
+                namedFunction.findAnnotation(FqName("androidx.compose.runtime.Composable")) != null
 
-        return object : PsiElementVisitor() {
+            if (!hasComposableAnnotation) {
+                return@namedFunctionVisitor
+            }
 
-            override fun visitElement(element: PsiElement) {
-                super.visitElement(element)
+            val composeFunctionModule = ModuleUtil.findModuleForPsiElement(namedFunction) ?: return@namedFunctionVisitor
 
-                if (element is KtNamedFunction) {
+            namedFunction.valueParameters.forEach { ktParameter ->
+                val typeReference = ktParameter.typeReference ?: return@forEach
 
-                    val hasComposableAnnotation =
-                        element.findAnnotation(FqName("androidx.compose.runtime.Composable")) != null
+                val ktType = (ktParameter.resolveToDescriptorIfAny() as? CallableDescriptor)?.returnType
+                    ?: return@forEach
 
-                    if (!hasComposableAnnotation) {
-                        return
-                    }
-
-                    val composeFunctionModule = ModuleUtil.findModuleForPsiElement(element) ?: return
-
-                    element.valueParameters.forEach { ktParameter ->
-                        val typeReference = ktParameter.typeReference ?: return@forEach
-
-                        val ktType = (ktParameter.resolveToDescriptorIfAny() as? CallableDescriptor)?.returnType
-                            ?: return@forEach
-
-                        val instabilityCause = ktType.getInstabilityCause(composeFunctionModule)
-                        if (instabilityCause != null) {
-                            holder.registerProblem(typeReference, "Composable unstable: $instabilityCause")
-                        }
-                    }
+                val instabilityCause = ktType.getInstabilityCause(composeFunctionModule)
+                if (instabilityCause != null) {
+                    holder.registerProblem(typeReference, ComposeStatsBundle.message("compose.unstable", instabilityCause))
                 }
             }
         }
-    }
 }
+
 
 fun KotlinType.hasStableComposeAnnotation(): Boolean {
     return toClassDescriptor?.annotations?.hasStableComposeAnnotation() ?: false
@@ -143,19 +134,17 @@ fun KotlinType.getInstabilityCause(
         return null
     } else {
 
-        memberScope.getContributedDescriptors()
+        memberScope.getContributedDescriptors().filterIsInstance<PropertyDescriptorImpl>()
             .forEach { descriptor ->
-                if (descriptor is PropertyDescriptorImpl) {
                     if (descriptor.isVar) {
-                        return "$shortName contains mutable property '${descriptor.name}'"
+                        return ComposeStatsBundle.message("cause.contains.mutable.property", shortName.toString(), descriptor.name)
                     } else {
                         val propKtClass = descriptor.type
 
                         val instabilityCause =
                             propKtClass.getInstabilityCause(composeFunctionModule, resolveParent)
                         if (instabilityCause != null) {
-                            return "$shortName contains unstable property '${descriptor.name}' with type '$instabilityCause'"
-                        }
+                            return ComposeStatsBundle.message("cause.contains.unstable.property", shortName.toString(), descriptor.name, instabilityCause)
                     }
                 }
             }
@@ -167,7 +156,7 @@ fun KotlinType.getInstabilityCause(
     val typeModule = ModuleUtil.findModuleForPsiElement(psiElement) ?: return "$shortName cannot be resolved (#2)"
 
     if (typeModule != composeFunctionModule) {
-        return "$shortName is not in the same module as the composable function"
+        return ComposeStatsBundle.message("cause.is.not.same.module", shortName.toString())
     }
 
     return null
