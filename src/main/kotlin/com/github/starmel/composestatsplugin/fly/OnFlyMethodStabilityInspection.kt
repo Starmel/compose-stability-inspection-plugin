@@ -30,11 +30,11 @@ import org.jetbrains.kotlinx.serialization.compiler.resolve.toClassDescriptor
 class OnFlyMethodStabilityInspection : AbstractKotlinInspection() {
 
     override fun getDisplayName(): String {
-        return "Unstable type used as Compose method argument"
+        return ComposeStatsBundle.message("static.description")
     }
 
     override fun getStaticDescription(): String {
-        return "Unstable type used as Compose method argument"
+        return ComposeStatsBundle.message("static.description")
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor =
@@ -119,10 +119,13 @@ fun KotlinType.getInstabilityCause(
         resolveParent.add(fqName ?: return null)
     }
 
-    val classDescriptor = toClassDescriptor ?: return "$shortName cannot be resolved (#3)"
+    val classDescriptor = toClassDescriptor ?: return ComposeStatsBundle.message(
+        "cause.psi.element.not.found",
+        shortName.toString()
+    )
 
     if (classDescriptor.source is JavaSourceElement) {
-        return "$shortName unstable as it is Java class"
+        return ComposeStatsBundle.message("cause.java.source", shortName.toString())
     }
 
     if (isEnum()
@@ -137,7 +140,7 @@ fun KotlinType.getInstabilityCause(
     val isListType = fqName?.asString()?.startsWith("kotlin.collections.List") == true
 
     if (isListType) {
-        return "instead of List use [kotlinx.collections.immutable](https://github.com/Kotlin/kotlinx.collections.immutable) library"
+        return ComposeStatsBundle.message("cause.kotlin.x.library")
     }
 
     val isTupleType = fqName?.asString()?.startsWith("kotlin.Pair") == true ||
@@ -193,11 +196,11 @@ fun KotlinType.getInstabilityCause(
     }
 
     if (classDescriptor.source == SourceElement.NO_SOURCE) {
-        return "$shortName has no source to validate"
+        return ComposeStatsBundle.message("cause.no.source", shortName.toString())
     }
 
     if (classDescriptor.hasStabilityInferredAnnotation()) {
-        return "stability will be inferred at runtime"
+        return ComposeStatsBundle.message("cause.stability.inferred", shortName.toString())
     }
 
     // Check same module
@@ -208,8 +211,12 @@ fun KotlinType.getInstabilityCause(
     if (isLibraryCode) {
         isSameModule = false
     } else {
-        val psiElement = classDescriptor.psiElement ?: return "$shortName cannot be resolved (#1)"
-        val typeModule = ModuleUtil.findModuleForPsiElement(psiElement) ?: return "$shortName cannot be resolved (#2)"
+        val typeModule = classDescriptor.psiElement
+            ?.let(ModuleUtil::findModuleForPsiElement)
+            ?: return ComposeStatsBundle.message(
+                "cause.psi.element.not.found",
+                shortName.toString()
+            )
         isSameModule = typeModule == composeFunctionModule
     }
 
