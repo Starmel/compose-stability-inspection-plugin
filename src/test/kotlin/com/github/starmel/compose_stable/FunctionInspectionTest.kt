@@ -1,6 +1,6 @@
-package com.github.starmel.composestatsplugin
+package com.github.starmel.compose_stable
 
-import com.github.starmel.composestatsplugin.fly.OnFlyMethodStabilityInspection
+import com.github.starmel.compose_stable.fly.OnFlyMethodStabilityInspection
 import com.intellij.codeInsight.daemon.impl.HighlightInfo
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase

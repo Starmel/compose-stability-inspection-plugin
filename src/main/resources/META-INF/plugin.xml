@@ -1,7 +1,7 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>com.github.starmel.composestatsplugin</id>
-    <name>compose-stats-plugin Template</name>
+    <id>com.github.starmel.compose_stable</id>
+    <name>Compose Stability Inspection</name>
     <vendor>starmel</vendor>
 
     <depends>com.intellij.modules.platform</depends>
@@ -16,12 +16,8 @@
                          groupName="Compose"
                          enabledByDefault="true"
                          level="WARNING"
-                         implementationClass="com.github.starmel.composestatsplugin.fly.OnFlyMethodStabilityInspection"/>
+                         implementationClass="com.github.starmel.compose_stable.fly.OnFlyMethodStabilityInspection"/>
 
     </extensions>
 
-    <applicationListeners>
-        <listener class="com.github.starmel.composestatsplugin.listeners.MyApplicationActivationListener"
-                  topic="com.intellij.openapi.application.ApplicationActivationListener"/>
-    </applicationListeners>
 </idea-plugin>

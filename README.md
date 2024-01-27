@@ -1,73 +1,48 @@
-# compose-stats-plugin
+# Compose Stability Inspection Plugin
 
 ![Build](https://github.com/Starmel/compose-stats-plugin/workflows/Build/badge.svg)
 [![Version](https://img.shields.io/jetbrains/plugin/v/PLUGIN_ID.svg)](https://plugins.jetbrains.com/plugin/PLUGIN_ID)
 [![Downloads](https://img.shields.io/jetbrains/plugin/d/PLUGIN_ID.svg)](https://plugins.jetbrains.com/plugin/PLUGIN_ID)
 
-## Template ToDo list
-
-- [x] Create a new [IntelliJ Platform Plugin Template][template] project.
-- [ ] Get familiar with the [template documentation][template].
-- [ ] Adjust the [pluginGroup](./gradle.properties), [plugin ID](./src/main/resources/META-INF/plugin.xml)
-  and [sources package](./src/main/kotlin).
-- [ ] Adjust the plugin description in `README` (see [Tips][docs:plugin-description])
-- [ ] Review
-  the [Legal Agreements](https://plugins.jetbrains.com/docs/marketplace/legal-agreements.html?from=IJPluginTemplate).
-- [ ] [Publish a plugin manually](https://plugins.jetbrains.com/docs/intellij/publishing-plugin.html?from=IJPluginTemplate)
-  for the first time.
-- [ ] Set the `PLUGIN_ID` in the above README badges.
-- [ ] Set the [Plugin Signing](https://plugins.jetbrains.com/docs/intellij/plugin-signing.html?from=IJPluginTemplate)
-  related [secrets](https://github.com/JetBrains/intellij-platform-plugin-template#environment-variables).
-- [ ] Set
-  the [Deployment Token](https://plugins.jetbrains.com/docs/marketplace/plugin-upload.html?from=IJPluginTemplate).
-- [ ] Click the <kbd>Watch</kbd> button on the top of the [IntelliJ Platform Plugin Template][template] to be notified
-  about releases containing new features and fixes.
-
 <!-- Plugin description -->
-This Fancy IntelliJ Platform Plugin is going to be your implementation of the brilliant ideas that you have.
 
-This specific section is a source for the [plugin.xml](/src/main/resources/META-INF/plugin.xml) file which will be
-extracted by the [Gradle](/build.gradle.kts) during the build process.
+## Overview
 
-To keep everything working, do not remove `<!-- ... -->` sections.
-<!-- Plugin description end -->
+The Compose Stability Inspection Plugin is a powerful tool designed to help you ensure the stability of Compose methods. Instability in your code can lead to unnecessary recomposition and performance issues. This plugin helps you identify unstable methods and provides quick fixes to help you resolve them.
 
-## Installation
+Tip:
 
-- Using IDE built-in plugin system:
+Use IDEA: double shift press > Run Inspection by Name > "Compose Stability Inspection" to run the inspection on a specific file or whole project.
 
-  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "
-  compose-stats-plugin"</kbd> >
-  <kbd>Install Plugin</kbd>
+## Stability Criteria
 
-- Manually:
-
-  Download the [latest release](https://github.com/Starmel/compose-stats-plugin/releases/latest) and install it manually
-  using
-  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>⚙️</kbd> > <kbd>Install plugin from disk...</kbd>
-
----
-Plugin based on the [IntelliJ Platform Plugin Template][template].
-
-[template]: https://github.com/JetBrains/intellij-platform-plugin-template
-
-[docs:plugin-description]: https://plugins.jetbrains.com/docs/intellij/plugin-user-experience.html#plugin-description-and-presentation
-
-
-Instability is caused by:
-
-* Interface property
-* Mutable property
-* Class from other module not marked as stable
+The plugin recognizes stability in the following cases:
 
 Stable is:
 
-* Class marked as `@Stable`, `@Immutable`. Including if sealed class root parent is marked as stable.
-* kotlinx.collections.immutable library
-* Non-mutable class in same module as `@Composable` function declaration
+* Class with all immutable properties
+* Class marked as `@Stable`, `@Immutable`. Sealed class children are stable if parent is marked with `@Stable`
+  or `@Immutable`
+* [kotlinx.collections.immutable](https://github.com/Kotlin/kotlinx.collections.immutable) library
 * Interface
 * Enum
 * Primitive
+* Tuple with stable elements
+* Functional type with stable parameters
+
+Instability is caused by:
+
+* Mutable property
+* Class from other module not marked as stable
+* Java class
 
 Not handled yet:
+
 * Generic class parameter
+
+<!-- Plugin description end -->
+
+## Contributing
+
+We welcome contributions from the community to make this plugin even better. If you have ideas, bug reports, or would
+like to contribute to its development, please open an issue or submit a pull request.

@@ -1,6 +1,6 @@
-package com.github.starmel.composestatsplugin.fly
+package com.github.starmel.compose_stable.fly
 
-import com.github.starmel.composestatsplugin.ComposeStatsBundle
+import com.github.starmel.compose_stable.ComposeStatsBundle
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleUtil

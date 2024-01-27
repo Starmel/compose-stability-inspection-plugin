@@ -1,4 +1,4 @@
-package com.github.starmel.composestatsplugin
+package com.github.starmel.compose_stable
 
 import com.intellij.DynamicBundle
 import org.jetbrains.annotations.NonNls
