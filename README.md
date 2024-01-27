@@ -68,3 +68,6 @@ Stable is:
 * Interface
 * Enum
 * Primitive
+
+Not handled yet:
+* Generic class parameter

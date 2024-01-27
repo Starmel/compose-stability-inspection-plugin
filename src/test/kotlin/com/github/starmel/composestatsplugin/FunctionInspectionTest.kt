@@ -497,6 +497,52 @@ class FunctionInspectionTest : BasePlatformTestCase() {
             .contains("Composable unstable", 0)
     }
 
+    fun `test Pair String, String is stable`() {
+        highlight(
+            """
+        @Composable
+        fun Test(pair: Pair<String, String>) { }
+        """.trimIndent()
+        )
+            .contains("Composable unstable", 0)
+    }
+
+    fun `test Pair String, UnstableClass is unstable`() {
+        highlight(
+            """
+        class UnstableClass {
+            var info = ""
+        }
+        @Composable
+        fun Test(pair: Pair<String, UnstableClass>) { }
+        """.trimIndent()
+        )
+            .contains("Composable unstable", 1)
+    }
+
+    fun `test Triple String, String, String is stable`() {
+        highlight(
+            """
+        @Composable
+        fun Test(pair: Triple<String, String, String>) { }
+        """.trimIndent()
+        )
+            .contains("Composable unstable", 0)
+    }
+
+    fun `test Triple String, String, UnstableClass is unstable`() {
+        highlight(
+            """
+        class UnstableClass {
+            var info = ""
+        }
+        @Composable
+        fun Test(pair: Triple<String, String, UnstableClass>) { }
+        """.trimIndent()
+        )
+            .contains("Composable unstable", 1)
+    }
+
     //region: test utils
 
     private fun highlight(@Language("kotlin") text: String): List<HighlightInfo> {
@@ -518,8 +564,29 @@ class FunctionInspectionTest : BasePlatformTestCase() {
             interface ImmutableMap<K, V>
         """.trimIndent()
         )
+
+        // чота не работает определение fqname для Tuple в режиме теста. Поможем анализатору руками.
+        myFixture.configureByText(
+            "kotlinstd.kt", """
+            package kotlin
+            
+            public data class Pair<out A, out B>(
+                public val first: A,
+                public val second: B
+            )
+            
+            public data class Triple<out A, out B, out C>(
+                public val first: A,
+                public val second: B,
+                public val third: C
+            )
+        """.trimIndent()
+        )
+
         myFixture.configureByText(
             "TestFile.kt", """
+            package com.test
+                
             import androidx.compose.runtime.Composable
             import androidx.compose.runtime.Stable
             import androidx.compose.runtime.Immutable
@@ -528,18 +595,6 @@ class FunctionInspectionTest : BasePlatformTestCase() {
         """.trimIndent()
         )
         return myFixture.doHighlighting()
-    }
-
-    private fun List<HighlightInfo>.has(description: String, count: Int = 1) = apply {
-        count { it.description == description }.let { findingCount ->
-            if (findingCount != count) {
-                TestCase.assertEquals(
-                    "Expected to find $description $count times in ${this.joinToString("\n")}",
-                    count,
-                    findingCount
-                )
-            }
-        }
     }
 
     private fun List<HighlightInfo>.contains(description: String, count: Int = 1) = apply {
