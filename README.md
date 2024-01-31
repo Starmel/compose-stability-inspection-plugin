@@ -6,6 +6,8 @@
 
 <!-- Plugin description -->
 
+<img width="646" alt="image" src="https://github.com/Starmel/compose-stability-inspection-plugin/assets/8287942/0e1495c7-4cdc-469d-999c-a981b4fbe121">
+
 ## Overview
 
 The Compose Stability Inspection Plugin is a powerful tool designed to help you ensure the stability of Compose methods. Instability in your code can lead to unnecessary recomposition and performance issues. This plugin helps you identify unstable methods and provides quick fixes to help you resolve them.
